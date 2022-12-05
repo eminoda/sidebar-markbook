@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/transmat/lib/index.umd.js"></script>
+    <style>
+      #source {
+        background: #eef;
+        border: solid 1px rgba(0, 0, 255, 0.2);
+        border-radius: 8px;
+        cursor: move;
+        display: inline-block;
+        margin: 1em;
+        padding: 4em 5em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="source" draggable="true" tabindex="0">大家好，我是阿宝哥</div>
+    <script>
+      const { Transmat, addListeners, TransmatObserver } = transmat;
+
+      const source = document.getElementById('source');
+
+      addListeners(source, 'transmit', (event) => {
+        const transmat = new Transmat(event);
+        transmat.setData({
+          'text/plain': '大家好，我是阿宝哥!',
+          'text/html': `
+             <h1>大家好，我是阿宝哥</h1>
+             <p>聚焦全栈，专注分享 TS、Vue 3、前端架构等技术干货。
+                <a href="https://juejin.cn/user/764915822103079">访问我的主页</a>!
+             </p>
+             <img src="https://sf3-ttcdn-tos.pstatp.com/img/user-avatar/
+               075d8e781ba84bf64035ac251988fb93~300x300.image" border="1" />
+           `,
+          'text/uri-list': 'https://juejin.cn/user/764915822103079',
+          'application/json': {
+            name: '阿宝哥',
+            wechat: 'semlinker',
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

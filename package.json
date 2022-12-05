@@ -1,0 +1,23 @@
+{
+  "name": "@eminoda/sidebar-markbook",
+  "version": "1.0.0",
+  "description": "基于 electron 的桌面书签管理栏",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eminoda/sidebar-markbook.git"
+  },
+  "keywords": [
+    "electron",
+    "markbook"
+  ],
+  "author": "eminoda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eminoda/sidebar-markbook/issues"
+  },
+  "homepage": "https://github.com/eminoda/sidebar-markbook#readme"
+}

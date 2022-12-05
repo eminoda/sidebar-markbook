@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/transmat/lib/index.umd.js"></script>
+    <style>
+      body {
+        text-align: center;
+        font: 1.2em Helvetia, Arial, sans-serif;
+      }
+      #target {
+        border: dashed 1px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        margin: 1em;
+        padding: 4em;
+      }
+      .drag-active {
+        background: rgba(255, 255, 0, 0.1);
+      }
+      .drag-over {
+        background: rgba(255, 255, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="target" tabindex="0">放这里哟！</div>
+    <script>
+      const { Transmat, addListeners, TransmatObserver } = transmat;
+
+      const target = document.getElementById('target');
+
+      addListeners(target, 'receive', (event) => {
+        const transmat = new Transmat(event);
+        // 判断是否含有"application/json"类型的数据
+        // 及事件类型是否为drop或paste事件
+        console.log(transmat)
+        if (transmat.hasType('text/uri-list') && transmat.accept()) {
+          const jsonString = transmat.getData('text/uri-list');
+          const data = (jsonString);
+          target.textContent = jsonString;
+        }
+      });
+    </script>
+  </body>
+</html>
