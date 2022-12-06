@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from "react";
 import './MenuIcon.less'
 import { Tooltip, Popover } from 'antd'
 import { FolderOutlined, SettingOutlined } from '@ant-design/icons'
@@ -15,12 +14,13 @@ interface MenuIconProps {
   url?: string
   type: MenuType
   level: number
-  children?: MenuIconProps[]
+  subMenuIcons?: MenuIconProps[]
 }
-function MenuIcon(props: MenuIconProps) {
+const MenuIcon: React.FC<MenuIconProps> = (props) => {
   const [curLevel, setCurLevel] = useState(0)
   const changeWinWidth = (level: number, open: boolean) => {
     console.log(curLevel, level, level, open)
+    return;
     // 同级移动不改变窗体大小
 
     setCurLevel(level)
@@ -40,10 +40,15 @@ function MenuIcon(props: MenuIconProps) {
       // }
     }
   }
-  let childJSX: JSX.Element = <></>
+  const handleTest = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
+    console.log(1)
+    e.stopPropagation()
+    e.preventDefault()
+  }
+  let childJSX: React.ReactElement = <></>
 
   // 单个书签图标展示
-  if (!props.children || props.children.length == 0) {
+  if (!props.subMenuIcons || props.subMenuIcons.length == 0) {
     // 设置图标
     if (props.type == MenuType.SETTING_ICON) {
       childJSX = <SettingOutlined className="icon-img" />
@@ -63,9 +68,9 @@ function MenuIcon(props: MenuIconProps) {
   else if (props.type == MenuType.MORE_ICON) {
     const childSideBar = (
       <div className="child-menus">
-        {props.children.map((_item, index) => (
+        {props.subMenuIcons.map((_item, index) => (
           <div className="icon-item" key={index}>
-            <Tooltip placement="rightTop" color="#2db7f5" title={_item.name} onOpenChange={(open) => changeWinWidth(_item.level, open)}>
+            <Tooltip placement="rightTop" trigger="click" color="#2db7f5" title={_item.name} onOpenChange={(open: boolean) => changeWinWidth(_item.level, open)}>
               <img src={_item.icon} alt={_item.name} />
             </Tooltip>
           </div>
@@ -73,7 +78,7 @@ function MenuIcon(props: MenuIconProps) {
       </div>
     )
     childJSX = (
-      <Popover placement="rightTop" content={childSideBar} trigger="hover" onOpenChange={(open) => changeWinWidth(props.level, open)}>
+      <Popover placement="rightTop" trigger="click" content={childSideBar}  >
         <FolderOutlined className="icon-img" />
       </Popover>
     )
