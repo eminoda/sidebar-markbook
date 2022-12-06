@@ -8,17 +8,6 @@
   <body>
     <h1>Hello World!</h1>
     <p>We are using Node.js <span id="node-version"></span>, Chromium <span id="chrome-version"></span>, and Electron <span id="electron-version"></span>.</p>
-    <script>
-      const $body = document.getElementsByTagName('html')[0];
-      console.log($body);
-      $body.addEventListener('mouseenter', function () {
-        console.log('mouseenter');
-        ipc.send('win-change', { type: 'in' });
-      });
-      $body.addEventListener('mouseleave', function () {
-        console.log('mouseleave');
-        ipc.send('win-change', { type: 'out' });
-      });
-    </script>
+    <script></script>
   </body>
 </html>
