@@ -3,7 +3,7 @@ const path = require('path');
 
 function createWindow(screenHeight) {
   const rect = {
-    width: 70,
+    width: 300,
     height: 600,
   };
   const win = new BrowserWindow({
@@ -26,7 +26,7 @@ function createWindow(screenHeight) {
     // win.setResizable(true)
     console.log(data.type);
     if (data.type == 'in') {
-      win.setSize(rect.width + 300, rect.height);
+      win.setSize(rect.width + 70, rect.height);
     } else {
       win.setSize(rect.width, rect.height);
     }

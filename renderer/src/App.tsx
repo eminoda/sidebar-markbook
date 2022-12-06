@@ -2,27 +2,29 @@ import React from 'react'
 import { useState, MouseEvent } from 'react'
 import './App.css'
 import SideLine from './components/SideLine'
-import SideBar from './components/SideBar'
+import SideBar from './components/SideBar/SideBar'
+import debounce from 'lodash/debounce'
+function App() {
+  const [isBar, setBar] = useState(true)
 
-function App () {
-  const [isHover, setHover] = useState(false)
+  const slowHideSideBar = debounce(() => {
+    // setBar(false)
+  }, 2 * 1000)
 
-  const handleMouseOver = (e: MouseEvent<HTMLDivElement, MouseEvent>): void => {
+  const handleMouseIn = (e: MouseEvent<HTMLDivElement, MouseEvent>): void => {
     e.stopPropagation()
-    setHover(true)
-
+    setBar(true)
   }
 
   const handleMouseOut = (e: MouseEvent<HTMLDivElement, MouseEvent>): void => {
     e.stopPropagation()
-    setHover(false)
-    // setHover(true)
+    slowHideSideBar()
   }
 
   return (
     <React.Fragment>
-      {!isHover && <SideLine handleMouseOver={handleMouseOver} />}
-      {isHover && <SideBar handleMouseOut={handleMouseOut} />}
+      {isBar && <SideBar handleMouseOut={handleMouseOut} />}
+      {!isBar && <SideLine handleMouseIn={handleMouseIn} />}
     </React.Fragment>
   )
 }
