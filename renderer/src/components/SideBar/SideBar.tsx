@@ -2,10 +2,11 @@ import React from 'react'
 import { useState } from 'react'
 import './SideBar.less'
 import { FolderOutlined, SettingOutlined } from '@ant-design/icons'
-import MenuIcon, { MenuType, MenuIconPropsType } from './MenuIcon/MenuIcon'
 import { Tooltip, Popover } from 'antd'
+import MenuIcon, { MenuType, MenuIconPropsType } from './MenuIcon/MenuIcon'
+import { WithMenuIconPopver } from './MenuIcon/MenuIconPopver'
 
-function SideBar (props: { handleMouseOut: any }) {
+function SideBar(props: { handleMouseOut: any }) {
   const [count, setCount] = useState(0)
   const [menus] = useState<MenuIconPropsType[]>([
     { name: 'npm', level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://static.npmjs.com/b0f1a8318363185cc2ea6a40ac23eeb2.png', url: '' },
@@ -34,14 +35,16 @@ function SideBar (props: { handleMouseOut: any }) {
   //     console.log('mouseleave')
   //     ipc.send('win-change', { type: 'out' })
   //   })
+
   return (
     <div className="side-bar" onMouseLeave={props.handleMouseOut}>
       <div className="icon-bar">
+        {/* TODO: 不合规的 schema 需要 filter */}
         {menus.map((menu, index) => {
-          return <MenuIcon {...menu} key={index} />
+          return <WithMenuIconPopver {...menu} key={index} />
         })}
       </div>
-      <MenuIcon name={'设置'} type={MenuType.SETTING_ICON} level={0} />
+      <WithMenuIconPopver name={'设置'} type={MenuType.SETTING_ICON} level={0} />
     </div>
   )
 }

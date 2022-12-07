@@ -1,9 +1,11 @@
+const { channel } = require('diagnostics_channel')
 const { app, BrowserWindow, ipcMain } = require('electron')
+const { resolve } = require('path')
 const path = require('path')
 
 function createWindow(screenHeight) {
   const rect = {
-    width: 66,
+    width: 70,
     height: 600,
   }
   const win = new BrowserWindow({
@@ -32,6 +34,23 @@ function createWindow(screenHeight) {
     }
     console.log('new win rect', win.getSize())
     win.setResizable(false)
+  })
+  ipcMain.handle('win-change', (event, data) => {
+    console.log(data)
+    return new Promise((resolve, reject) => {
+      const [width, height] = win.getSize()
+      try {
+        win.setResizable(true)
+        const newWidth = width + data.width
+        console.log(newWidth, rect)
+        win.setSize(newWidth, rect.height)
+        win.setResizable(false)
+        resolve({ width: newWidth, height })
+      } catch (err) {
+        console.log(err)
+        resolve({ width, height })
+      }
+    })
   })
 }
 
