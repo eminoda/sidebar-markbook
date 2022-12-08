@@ -4,19 +4,18 @@ import { Tooltip, Popover } from 'antd'
 import delay from 'lodash/delay'
 import './MenuIconPopver.less'
 
-interface WithPopoverPropsType extends MenuIconPropsType {
+interface WithPopoverProps extends MenuIconPropsType {
   id: string | number
   isPopover: boolean
-  subList?: WithPopoverPropsType[]
+  subWithPopovers?: WithPopoverProps[]
 }
 
-interface WithPopoverEventPropsType extends WithPopoverPropsType {
+interface WithPopoverEventPropsType extends WithPopoverProps {
   onRerenderLayout: Function
 }
-export type { WithPopoverPropsType }
 
-function withPopver(Component: React.ComponentType<MenuIconPropsType>) {
-  const WithPopver = <T extends WithPopoverEventPropsType>(props: T) => {
+function withPopver (Component: React.ComponentType<MenuIconPropsType>) {
+  const WithPopver = <T extends WithPopoverEventPropsType> (props: T) => {
     // console.log(props)
     const [isPopver, setIsPopver] = useState(false)
     const handleMouseEnter = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: T) => {
@@ -50,7 +49,7 @@ function withPopver(Component: React.ComponentType<MenuIconPropsType>) {
 
     let menuIconPopverJSX: JSX.Element = <></>
     // 子菜单
-    if (props.subMenuIcons && props.subMenuIcons.length > 0) {
+    if (props.subWithPopovers && props.subWithPopovers.length > 0) {
       menuIconPopverJSX = (
         <Popover
           placement="rightTop"
@@ -59,14 +58,10 @@ function withPopver(Component: React.ComponentType<MenuIconPropsType>) {
           getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
           content={
             <div className="more-menus">
-              {props.isPopover}
-              {props.subMenuIcons.map((_props, index) => {
+              {props.subWithPopovers.map((_props, index) => {
+                const _WithPopver = withPopver(MenuIcon)
                 return (
-                  <React.Fragment key={index}>
-                    <WithPopver {..._props}>
-                      <Component {..._props} />
-                    </WithPopver>
-                  </React.Fragment>
+                  <_WithPopver {..._props} onRerenderLayout={props.onRerenderLayout} key={index} />
                 )
               })}
             </div>
@@ -95,4 +90,5 @@ function withPopver(Component: React.ComponentType<MenuIconPropsType>) {
   return WithPopver
 }
 
+export type WithPopoverPropsType = WithPopoverProps
 export const WithMenuIconPopver = withPopver(MenuIcon)
