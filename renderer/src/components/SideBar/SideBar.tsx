@@ -14,9 +14,9 @@ const menuIcons: MenuIconPropsType[] = [
   { name: 'npm', id: 1, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://static.npmjs.com/b0f1a8318363185cc2ea6a40ac23eeb2.png', url: '' },
   { name: '语雀', id: 2, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://mdn.alipayobjects.com/huamei_0prmtq/afts/img/A*LmuNQ6eMk3gAAAAAAAAAAAAADvuFAQ/original', url: '' },
   { name: 'vite', id: 3, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://cn.vitejs.dev/logo.svg', url: '' },
-  { name: '语雀', id: 4, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://via.placeholder.com/50x50', url: '' },
+  { name: 'react', id: 4, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://zh-hans.reactjs.org/favicon.ico', url: '' },
   {
-    name: '语雀',
+    name: '更多',
     id: 5, level: 1,
     type: MenuType.MORE_ICON,
     icon: '',
@@ -128,9 +128,12 @@ function SideBar (props: { handleMouseOut: any }) {
     if (mouseEnterOrLeave == 'leave') {
       setTimeout(async () => {
         await ipc.invoke<number>('win-change', { width: 70 * (maxDeep - menuIcon.level) })
-      }, 50)
+      }, 50
+      
+      
+      )
     }
-  }, 1 * 1000)
+  }, 300)
 
   const onRerenderLayout = async (activeMenuIcon: WithPopoverPropsType, mouseEnterOrLeave: string) => {
     console.log(activeMenuIcon.level, activeMenuIcon.id, mouseEnterOrLeave)
@@ -140,17 +143,19 @@ function SideBar (props: { handleMouseOut: any }) {
 
   return (
     <div className="side-bar" onMouseLeave={props.handleMouseOut}>
-      <div className="icon-bar">
-        {/* TODO: 不合规的 schema 需要 filter */}
-        {list.map((menu) => {
-          return (
-            <React.Fragment key={menu.id}>
-              <WithMenuIconPopver {...menu} onRerenderLayout={onRerenderLayout} />
-            </React.Fragment>
-          )
-        })}
+      <div className="side-bar-inner">
+        <div className="icon-bar">
+          {/* TODO: 不合规的 schema 需要 filter */}
+          {list.map((menu) => {
+            return (
+              <React.Fragment key={menu.id}>
+                <WithMenuIconPopver {...menu} onRerenderLayout={onRerenderLayout} />
+              </React.Fragment>
+            )
+          })}
+        </div>
+        <WithMenuIconPopver id="setting" onRerenderLayout={onRerenderLayout} isPopover={false} name={'设置'} type={MenuType.SETTING_ICON} level={0} />
       </div>
-      <WithMenuIconPopver id="setting" onRerenderLayout={onRerenderLayout} isPopover={false} name={'设置'} type={MenuType.SETTING_ICON} level={0} />
     </div>
   )
 }
