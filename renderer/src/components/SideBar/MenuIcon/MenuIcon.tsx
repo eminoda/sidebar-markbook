@@ -8,6 +8,8 @@ enum MenuType {
   CUSTOMER_ICON = '',
 }
 interface MenuIconProps {
+  id: string | number
+  parentId?: string | number,
   name: string
   icon?: string
   url?: string

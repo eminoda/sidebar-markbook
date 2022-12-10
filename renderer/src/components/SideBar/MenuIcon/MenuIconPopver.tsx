@@ -5,7 +5,6 @@ import delay from 'lodash/delay'
 import './MenuIconPopver.less'
 
 interface WithPopoverProps extends MenuIconPropsType {
-  id: string | number
   isPopover: boolean
   subWithPopovers?: WithPopoverProps[]
 }
