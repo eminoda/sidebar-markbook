@@ -1,23 +1,20 @@
 import React, { useState } from 'react'
-import MenuIcon, { MenuIconPropsType, MenuType } from './MenuIcon'
+import MenuIcon, { MenuIconProps, MenuType } from '../MenuIcon/MenuIcon'
 import { Tooltip, Popover } from 'antd'
 import delay from 'lodash/delay'
 import './MenuIconPopver.less'
 
-interface WithPopoverProps extends MenuIconPropsType {
+interface MenuIconPopoverProps extends MenuIconProps {
   isPopover: boolean
-  subWithPopovers?: WithPopoverProps[]
-}
-
-interface WithPopoverEventPropsType extends WithPopoverProps {
   onRerenderLayout: Function
+  subWithPopovers?: MenuIconPopoverProps[]
 }
 
-function withPopver (Component: React.ComponentType<MenuIconPropsType>) {
-  const WithPopver = <T extends WithPopoverEventPropsType> (props: T) => {
+function withPopver(Component: React.ComponentType<MenuIconProps>) {
+  const MenuIconPopover = (props: MenuIconPopoverProps) => {
     // console.log(props)
     const [isPopver, setIsPopver] = useState(false)
-    const handleMouseEnter = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: T) => {
+    const handleMouseEnter = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconPopoverProps) => {
       props.onRerenderLayout(menuIconProps, 'enter')
       console.log('鼠标移入', menuIconProps.name + '_' + menuIconProps.level)
       // 防止前一次移出未执行
@@ -32,7 +29,7 @@ function withPopver (Component: React.ComponentType<MenuIconPropsType>) {
       //     debugger
       //   }, 1000)
     }
-    const handleMouseLeave = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconPropsType) => {
+    const handleMouseLeave = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconProps) => {
       props.onRerenderLayout(menuIconProps, 'leave')
       console.log('鼠标移出', menuIconProps.name + '_' + menuIconProps.level)
       // if (!isPopver) {
@@ -59,9 +56,7 @@ function withPopver (Component: React.ComponentType<MenuIconPropsType>) {
             <div className="more-menus">
               {props.subWithPopovers.map((_props, index) => {
                 const _WithPopver = withPopver(MenuIcon)
-                return (
-                  <_WithPopver {..._props} onRerenderLayout={props.onRerenderLayout} key={index} />
-                )
+                return <_WithPopver {..._props} onRerenderLayout={props.onRerenderLayout} key={index} />
               })}
             </div>
           }
@@ -86,8 +81,8 @@ function withPopver (Component: React.ComponentType<MenuIconPropsType>) {
       </div>
     )
   }
-  return WithPopver
+  return MenuIconPopover
 }
 
-export type WithPopoverPropsType = WithPopoverProps
-export const WithMenuIconPopver = withPopver(MenuIcon)
+export { type MenuIconPopoverProps }
+export default withPopver(MenuIcon)
