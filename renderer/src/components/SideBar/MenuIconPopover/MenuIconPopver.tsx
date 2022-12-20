@@ -15,8 +15,8 @@ function withPopver(Component: React.ComponentType<MenuIconProps>) {
     // console.log(props)
     const [isPopver, setIsPopver] = useState(false)
     const handleMouseEnter = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconPopoverProps) => {
-      props.onRerenderLayout(menuIconProps, 'enter')
       console.log('鼠标移入', menuIconProps.name + '_' + menuIconProps.level)
+      props.onRerenderLayout(menuIconProps, 'enter')
       // 防止前一次移出未执行
       // if (isPopver) {
       //   return
@@ -30,8 +30,8 @@ function withPopver(Component: React.ComponentType<MenuIconProps>) {
       //   }, 1000)
     }
     const handleMouseLeave = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconProps) => {
-      props.onRerenderLayout(menuIconProps, 'leave')
       console.log('鼠标移出', menuIconProps.name + '_' + menuIconProps.level)
+      props.onRerenderLayout(menuIconProps, 'leave')
       // if (!isPopver) {
       //   return
       // }
@@ -77,6 +77,7 @@ function withPopver(Component: React.ComponentType<MenuIconProps>) {
     }
     return (
       <div className="icon-wrap" onMouseEnter={(e) => handleMouseEnter(e, props)} onMouseLeave={(e) => handleMouseLeave(e, props)}>
+        {props.isPopover}--
         {menuIconPopverJSX}
       </div>
     )

@@ -6,49 +6,8 @@ import MenuIconPopover, { MenuIconPopoverProps } from './MenuIconPopover/MenuIco
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
 import { menuIconDatas, MenuIconDataProps } from './const-data'
+import Item from 'antd/es/list/Item'
 
-const menuIconPopovers: MenuIconPopoverProps[] = []
-const onRerenderLayout = function () {}
-
-const buildMenuIconPopovers = function (list: MenuIconDataProps[]) {
-  const parentsMap: { [key: string]: MenuIconDataProps[] } = {}
-  for (let i = 0; i < list.length; i++) {
-    const parentId = String(list[i].parentId || '')
-    if (!parentsMap[parentId]) {
-      parentsMap[parentId] = []
-    }
-    parentsMap[parentId].push(list[i])
-  }
-  const appendMenuIconChildren = function (menuIconItem: MenuIconDataProps, level: number): MenuIconPopoverProps {
-    const menuIconPopoverItem: MenuIconPopoverProps = {
-      ...menuIconItem,
-      isPopover: false,
-      onRerenderLayout,
-      level,
-      type: MenuType.CUSTOMER_ICON,
-    }
-
-    // 含有子元素
-    if (menuIconItem.id && parentsMap[menuIconItem.id] && parentsMap[menuIconItem.id].length > 0) {
-      menuIconPopoverItem.subWithPopovers = parentsMap[menuIconItem.id].map((_menuIconItem) => {
-        return appendMenuIconChildren(_menuIconItem, level + 1)
-      })
-    }
-    // 有子级元素
-    return menuIconPopoverItem
-  }
-  parentsMap[''].forEach((item) => {
-    menuIconPopovers.push(appendMenuIconChildren(item, 1))
-  })
-  console.log(menuIconPopovers)
-}
-
-buildMenuIconPopovers(menuIconDatas)
-
-interface MenuIconEvents {
-  menuIcon: MenuIconProps
-  mouseEnterOrLeave: string
-}
 // const menuIcons: MenuIconProps[] = [
 //   { name: 'npm', id: 1, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://static.npmjs.com/b0f1a8318363185cc2ea6a40ac23eeb2.png', url: '' },
 //   { name: '语雀', id: 2, level: 1, type: MenuType.CUSTOMER_ICON, icon: 'https://mdn.alipayobjects.com/huamei_0prmtq/afts/img/A*LmuNQ6eMk3gAAAAAAAAAAAAADvuFAQ/original', url: '' },
@@ -177,26 +136,67 @@ interface MenuIconEvents {
 //     rerenderDebounce()
 //   }
 
-//   return (
-//     <div className="side-bar" onMouseLeave={props.handleMouseOut}>
-//       <div className="side-bar-inner">
-//         <div className="icon-bar">
-//           {/* TODO: 不合规的 schema 需要 filter */}
-//           {list.map((menu) => {
-//             return (
-//               <React.Fragment key={menu.id}>
-//                 <MenuIconPopover {...menu} onRerenderLayout={onRerenderLayout} />
-//               </React.Fragment>
-//             )
-//           })}
-//         </div>
-//         <MenuIconPopover id="setting" onRerenderLayout={onRerenderLayout} isPopover={false} name={'设置'} type={MenuType.SETTING_ICON} level={0} />
-//       </div>
-//     </div>
-//   )
-// }
+const SideBar = (props: { handleMouseOut: any }) => {
+  const [menuIcons, setMenuIcons] = useState<MenuIconPopoverProps[]>([])
+  const buildMenuIconPopovers = function (list: MenuIconDataProps[]) {
+    const parentsMap: { [key: string]: MenuIconDataProps[] } = {}
+    for (let i = 0; i < list.length; i++) {
+      const parentId = String(list[i].parentId || '')
+      if (!parentsMap[parentId]) {
+        parentsMap[parentId] = []
+      }
+      parentsMap[parentId].push(list[i])
+    }
+    const appendMenuIconChildren = function (menuIconItem: MenuIconDataProps, level: number): MenuIconPopoverProps {
+      const menuIconPopoverItem: MenuIconPopoverProps = {
+        ...menuIconItem,
+        isPopover: false,
+        onRerenderLayout,
+        level,
+        type: MenuType.CUSTOMER_ICON,
+      }
 
-// export default SideBar
-export default () => {
-  return <div>123</div>
+      // 含有子元素
+      if (menuIconItem.id && parentsMap[menuIconItem.id] && parentsMap[menuIconItem.id].length > 0) {
+        menuIconPopoverItem.subWithPopovers = parentsMap[menuIconItem.id].map((_menuIconItem) => {
+          return appendMenuIconChildren(_menuIconItem, level + 1)
+        })
+      }
+      // 有子级元素
+      return menuIconPopoverItem
+    }
+    return parentsMap[''].map((item) => {
+      return appendMenuIconChildren(item, 1)
+    })
+  }
+  const onRerenderLayout = function (currentMenuIcon: MenuIconPopoverProps, mouseEnterOrLeave: string) {
+    const newMenuIconDatas = menuIconDatas.map((item, index) => {
+      return { ...item, isPopover: true }
+    })
+    setMenuIcons(buildMenuIconPopovers(newMenuIconDatas))
+    console.log(JSON.stringify(menuIcons))
+  }
+
+  useEffect(() => {
+    console.log('update effect')
+    setMenuIcons(buildMenuIconPopovers(menuIconDatas))
+    console.log(menuIcons)
+  }, ['menuIcons'])
+  return (
+    <div className="side-bar" onMouseLeave={props.handleMouseOut}>
+      <div className="side-bar-inner">
+        <div className="icon-bar">
+          {menuIcons.map((menuIconProp) => {
+            return (
+              <React.Fragment key={menuIconProp.id}>
+                <MenuIconPopover {...menuIconProp} onRerenderLayout={onRerenderLayout} />
+              </React.Fragment>
+            )
+          })}
+        </div>
+        <MenuIconPopover id="setting" onRerenderLayout={onRerenderLayout} isPopover={false} name={'设置'} type={MenuType.SETTING_ICON} level={0} />
+      </div>
+    </div>
+  )
 }
+export default SideBar
