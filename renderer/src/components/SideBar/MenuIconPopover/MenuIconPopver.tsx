@@ -77,7 +77,6 @@ function withPopver(Component: React.ComponentType<MenuIconProps>) {
     }
     return (
       <div className="icon-wrap" onMouseEnter={(e) => handleMouseEnter(e, props)} onMouseLeave={(e) => handleMouseLeave(e, props)}>
-        {props.isPopover}--
         {menuIconPopverJSX}
       </div>
     )
