@@ -30,7 +30,7 @@ const MenuIcon: React.FC<MenuIconProps> = (props) => {
       childJSX = <img src={props.icon} alt={props.name} />
       break
   }
-  return <div className="icon-item">{childJSX}</div>
+  return <div className="icon-item" id={String(props.id)}>{childJSX}</div>
 }
 
 export { MenuType, type MenuIconProps }

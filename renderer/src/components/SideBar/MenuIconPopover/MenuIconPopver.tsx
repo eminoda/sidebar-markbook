@@ -10,37 +10,17 @@ interface MenuIconPopoverProps extends MenuIconProps {
   subWithPopovers?: MenuIconPopoverProps[]
 }
 
-function withPopver(Component: React.ComponentType<MenuIconProps>) {
+function withPopver (Component: React.ComponentType<MenuIconProps>) {
   const MenuIconPopover = (props: MenuIconPopoverProps) => {
     // console.log(props)
     const [isPopver, setIsPopver] = useState(false)
     const handleMouseEnter = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconPopoverProps) => {
       console.log('鼠标移入', menuIconProps.name + '_' + menuIconProps.level)
       props.onRerenderLayout(menuIconProps, 'enter')
-      // 防止前一次移出未执行
-      // if (isPopver) {
-      //   return
-      // }
-      // 增加窗体宽度
-      // await ipc.invoke<number>('win-change', { width: 70 })
-      // 窗体改变后，展示 popver
-      // setIsPopver(true)
-      //   setTimeout(() => {
-      //     debugger
-      //   }, 1000)
     }
     const handleMouseLeave = async (e: React.MouseEvent<HTMLDivElement>, menuIconProps: MenuIconProps) => {
       console.log('鼠标移出', menuIconProps.name + '_' + menuIconProps.level)
       props.onRerenderLayout(menuIconProps, 'leave')
-      // if (!isPopver) {
-      //   return
-      // }
-      // delay(() => {
-      //   setIsPopver(false)
-      // }, 400)
-      // delay(async () => {
-      //   await ipc.invoke<number>('win-change', { width: -70 })
-      // }, 800)
     }
 
     let menuIconPopverJSX: JSX.Element = <></>
@@ -51,17 +31,17 @@ function withPopver(Component: React.ComponentType<MenuIconProps>) {
           placement="rightTop"
           trigger="hover"
           open={props.isPopover}
-          getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
           content={
             <div className="more-menus">
               {props.subWithPopovers.map((_props, index) => {
-                const _WithPopver = withPopver(MenuIcon)
-                return <_WithPopver {..._props} onRerenderLayout={props.onRerenderLayout} key={index} />
+                const MenuIconPopover = withPopver(MenuIcon)
+                console.log(_props)
+                return <MenuIconPopover {..._props} onRerenderLayout={_props.onRerenderLayout} key={index} />
               })}
             </div>
           }
         >
-          <Component {...props} />
+          <div><Component {...props} /></div>
         </Popover>
       )
     }

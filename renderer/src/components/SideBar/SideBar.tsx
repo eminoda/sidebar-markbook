@@ -14,18 +14,31 @@ const SideBar = (props: { handleMouseOut: any }) => {
   let list: MenuIconPopoverProps[] = []
   let mouseEventOrLeave: string
 
-  const debounceLayout = debounce(() => {
-    setMenuIcons(list)
-  }, 1000)
+  const debounceLayout = debounce(async (current: MenuIconPopoverProps, mouseEnterOrLeave: string) => {
+    console.log(mouseEnterOrLeave, current)
+    if (mouseEnterOrLeave == 'enter') {
+      // await ipc.invoke('win-change', { width: current.level * 70 })
+      setMenuIcons(list)
+    } else if (mouseEnterOrLeave == 'leave') {
+      setMenuIcons(list)
+      setTimeout(async () => {
+        // await ipc.invoke('win-change', { width: (current.level - 1) * 70 })
+      }, 100)
+    }
+  }, 600)
 
-  const onRerenderLayout = function (currentMenuIcon: MenuIconPopoverProps, mouseEnterOrLeave: string) {
-    list = buildMenuIconPopovers(menuIconDatas, currentMenuIcon, mouseEnterOrLeave)
-    debounceLayout()
+  const onRerenderLayout = function (current: MenuIconPopoverProps, mouseEnterOrLeave: string) {
+    list = buildMenuIconPopovers(menuIconDatas, current, mouseEnterOrLeave)
+    console.log(list)
+    debounceLayout(current, mouseEnterOrLeave)
   }
   const buildMenuIconPopovers = function (list: MenuIconDataProps[], current: MenuIconPopoverProps | null, mouseEnterOrLeave: string) {
     // list 转 map
     const parentsMap: { [key: string]: MenuIconDataProps[] } = {}
     for (let i = 0; i < list.length; i++) {
+      // 收集元素map
+      const id = String(list[i].id)
+      // 收集父类map[]
       const parentId = String(list[i].parentId || '')
       if (!parentsMap[parentId]) {
         parentsMap[parentId] = []
@@ -33,33 +46,48 @@ const SideBar = (props: { handleMouseOut: any }) => {
       parentsMap[parentId].push(list[i])
     }
 
-    const buildMenuIconPopoverTree = function (menuIconItem: MenuIconDataProps, level: number): MenuIconPopoverProps {
-      const menuIconPopoverItem: MenuIconPopoverProps = {
-        ...menuIconItem,
-        isPopover: false,
-        onRerenderLayout,
-        level,
-        type: MenuType.CUSTOMER_ICON,
+    const changeParentPopoverCallback = function (menuIconItem: MenuIconPopoverProps): Function {
+      return function (isPopover: boolean): void {
+        menuIconItem.isPopover = isPopover
       }
-      if (mouseEnterOrLeave == 'leave' || mouseEnterOrLeave != 'enter') {
-        menuIconPopoverItem.isPopover = false
-      } else {
-        if (current && current.id == menuIconItem.id) {
-          menuIconPopoverItem.isPopover = true
-        }
-      }
-      // 含有子元素
-      if (menuIconItem.id && parentsMap[menuIconItem.id] && parentsMap[menuIconItem.id].length > 0) {
-        menuIconPopoverItem.type = MenuType.MORE_ICON
-        menuIconPopoverItem.subWithPopovers = parentsMap[menuIconItem.id].map((_menuIconItem) => {
-          return buildMenuIconPopoverTree(_menuIconItem, level + 1)
+    }
+    const buildTree = function (menuIconPopover: MenuIconPopoverProps, list: MenuIconPopoverProps[]): MenuIconPopoverProps {
+      const isPopover = !current ? false : mouseEnterOrLeave == 'enter' && current.id == menuIconPopover.id
+      // const isPopover = true
+      menuIconPopover.isPopover = isPopover
+      if (menuIconPopover.id && parentsMap[menuIconPopover.id] && parentsMap[menuIconPopover.id].length > 0) {
+        // 有后代改为文件夹类型
+        menuIconPopover.type = menuIconPopover.icon ? MenuType.CUSTOMER_ICON : MenuType.MORE_ICON
+        menuIconPopover.subWithPopovers = parentsMap[menuIconPopover.id].map((_menuIconItem) => {
+          const isPopover = !current ? false : mouseEnterOrLeave == 'enter' && current.id == _menuIconItem.id
+          if (isPopover) {
+            for (let i = 0; i < list.length; i++) {
+              list[i].isPopover = true
+            }
+          }
+          const child: MenuIconPopoverProps = {
+            ..._menuIconItem,
+            onRerenderLayout,
+            isPopover,
+            type: _menuIconItem.icon ? MenuType.CUSTOMER_ICON : MenuType.MORE_ICON,
+            level: menuIconPopover.level + 1
+          }
+          // console.log('list', JSON.stringify(list, null, 2))
+          return buildTree(child, [...list, child])
         })
       }
       // 有子级元素
-      return menuIconPopoverItem
+      return menuIconPopover
     }
     return parentsMap[''].map((item) => {
-      return buildMenuIconPopoverTree(item, 1)
+      const child: MenuIconPopoverProps = {
+        ...item,
+        onRerenderLayout,
+        isPopover: true,
+        type: MenuType.CUSTOMER_ICON,
+        level: 1 //初始值
+      }
+      return buildTree(child, [child])
     })
   }
 
