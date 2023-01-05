@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './MenuIcon.less'
 import { FolderOutlined, SettingOutlined } from '@ant-design/icons'
 
-enum MenuType {
+enum MenuTypeEnum {
   SETTING_ICON = 'SettingOutlined',
   MORE_ICON = 'FolderOutlined',
   CUSTOMER_ICON = '',
@@ -13,25 +13,36 @@ interface MenuIconProps {
   name: string
   icon?: string
   url?: string
-  type: MenuType
+  type: MenuTypeEnum
   level: number
 }
 const MenuIcon: React.FC<MenuIconProps> = (props) => {
   let childJSX: React.ReactElement = <></>
 
+  const handleMenuIcon = (props: MenuIconProps) => {
+    if (props.name == '记事本') {
+      ipc.invoke('invoke-event', { eventName: 'todo' }).then((data) => {
+        console.log(data)
+      })
+    }
+  }
   switch (props.type) {
-    case MenuType.MORE_ICON:
+    case MenuTypeEnum.MORE_ICON:
       childJSX = <FolderOutlined className="icon-img" />
       break
-    case MenuType.SETTING_ICON:
+    case MenuTypeEnum.SETTING_ICON:
       childJSX = <SettingOutlined className="icon-img" />
       break
-    case MenuType.CUSTOMER_ICON:
-      childJSX = <img src={props.icon} alt={props.name} />
+    case MenuTypeEnum.CUSTOMER_ICON:
+      childJSX = <img src={props.icon} alt={props.name} onClick={() => handleMenuIcon(props)} />
       break
   }
-  return <div className="icon-item" id={String(props.id)}>{childJSX}</div>
+  return (
+    <div className="icon-item" id={String(props.id)}>
+      {childJSX}
+    </div>
+  )
 }
 
-export { MenuType, type MenuIconProps }
+export { MenuTypeEnum, type MenuIconProps }
 export default MenuIcon

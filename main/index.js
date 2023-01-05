@@ -1,7 +1,7 @@
 const { channel } = require('diagnostics_channel')
 const { app, BrowserWindow, ipcMain } = require('electron')
-const { resolve } = require('path')
 const path = require('path')
+const todoWindow = require('./windows/todoWindow')
 
 function createWindow(screenHeight) {
   const rect = {
@@ -44,6 +44,22 @@ function createWindow(screenHeight) {
       const [width, height] = win.getSize()
       win.setResizable(false)
       resolve({ width, height })
+    })
+  })
+  // invoke-event 事件监听
+  ipcMain.handle('invoke-event', (event, data) => {
+    const { eventName, ...args } = data
+    return new Promise((resolve, reject) => {
+      if (eventName == 'todo') {
+        try {
+          todoWindow.open()
+          resolve(true)
+        } catch (err) {
+          reject(new Error('打开记事本失败: ' + err.message))
+        }
+      } else {
+        resolve({ test: 123 })
+      }
     })
   })
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import MenuIcon, { MenuIconProps, MenuType } from '../MenuIcon/MenuIcon'
+import MenuIcon, { MenuIconProps, MenuTypeEnum } from '../MenuIcon/MenuIcon'
 import { Tooltip, Popover } from 'antd'
 import delay from 'lodash/delay'
 import './MenuIconPopver.less'
@@ -46,7 +46,7 @@ function withPopver (Component: React.ComponentType<MenuIconProps>) {
       )
     }
     // 单个元素
-    else if (props.type == MenuType.SETTING_ICON || props.type == MenuType.CUSTOMER_ICON) {
+    else if (props.type == MenuTypeEnum.SETTING_ICON || props.type == MenuTypeEnum.CUSTOMER_ICON) {
       menuIconPopverJSX = (
         <Tooltip placement="rightTop" open={props.isPopover} color="#2db7f5" title={props.name}>
           <div>
