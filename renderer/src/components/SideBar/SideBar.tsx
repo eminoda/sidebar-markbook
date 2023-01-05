@@ -17,12 +17,12 @@ const SideBar = (props: { handleMouseOut: any }) => {
   const debounceLayout = debounce(async (current: MenuIconPopoverProps, mouseEnterOrLeave: string) => {
     console.log(mouseEnterOrLeave, current)
     if (mouseEnterOrLeave == 'enter') {
-      // await ipc.invoke('win-change', { width: current.level * 70 })
+      await ipc.invoke('win-change', { width: current.level * 70 })
       setMenuIcons(list)
     } else if (mouseEnterOrLeave == 'leave') {
       setMenuIcons(list)
       setTimeout(async () => {
-        // await ipc.invoke('win-change', { width: (current.level - 1) * 70 })
+        await ipc.invoke('win-change', { width: (current.level - 1) * 70 })
       }, 100)
     }
   }, 600)
