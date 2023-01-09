@@ -1,19 +1,36 @@
-const { app, BrowserWindow, screen } = require('electron');
-const path = require('path');
+const { app, BrowserWindow, screen } = require('electron')
+const path = require('path')
+const fs = require('fs-extra')
 
-const createWindow = () => {};
+const APP_PATH = app.getAppPath()
+const TODO_DATA_DIR = path.join(APP_PATH, 'todo')
+const TODO_DATA_FILE_PATH = path.join(TODO_DATA_DIR, 'list.json')
+
+const createWindow = () => {}
 module.exports = {
+  fetchTodoList: () => {
+    try {
+      if (!fs.ensureDirSync(TODO_DATA_DIR)) {
+        fs.mkdirpSync(TODO_DATA_DIR)
+      }
+      fs.ensureFileSync(TODO_DATA_FILE_PATH)
+      const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+      return list
+    } catch (err) {
+      throw new Error('文件读取失败：' + err.message)
+    }
+  },
   open: () => {
-    const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo');
+    const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo')
     if (todoWin) {
-      todoWin.focus();
+      todoWin.focus()
     } else {
       const rect = {
         width: 360,
         height: 440,
-      };
-      const primaryDisplay = screen.getPrimaryDisplay();
-      const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+      }
+      const primaryDisplay = screen.getPrimaryDisplay()
+      const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
       const win = new BrowserWindow({
         width: rect.width,
         height: rect.height,
@@ -27,12 +44,12 @@ module.exports = {
           preload: path.join(__dirname, '../preload.js'),
           devTools: true,
         },
-      });
-      win.loadURL('http://127.0.0.1:5173/todo');
+      })
+      win.loadURL('http://127.0.0.1:5173/todo')
       win.once('ready-to-show', () => {
-        win.setTitle('todo');
-        win.show();
-      });
+        win.setTitle('todo')
+        win.show()
+      })
     }
   },
-};
+}

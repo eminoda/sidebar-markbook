@@ -1,26 +1,43 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './TodoList.less'
 import { Checkbox } from 'antd'
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons'
 import test from './test.jpg'
-const colors = [
-  { bar: '#434343', line: '' },
-  { bar: '#1677ff', line: '' },
-  { bar: '#eb2f96', line: '' },
-  { bar: '#722ed1', line: '' },
-  { bar: '#13c2c2', line: '' },
-  { bar: '#52c41a', line: '' },
-  { bar: '#fadb14', line: '' },
-]
+import { todoItemProps } from '../TodoEditor/TodoEditor'
+
+type todoItemUIProps = todoItemProps & { color: string }
+
 const TodoList = (props: {}) => {
+  const [list, setList] = useState<todoItemUIProps[]>([])
+  // 获取待做事项列表
+  const getTodoList = (): Promise<todoItemUIProps[]> => {
+    return new Promise((resolve, reject) => {
+      ipc
+        .invoke<[]>('invoke-event', { eventName: 'fetch-todo-list' })
+        .then((data: todoItemUIProps[]) => {
+          console.log(data)
+          resolve(data)
+        })
+        .catch((err) => {
+          console.log(err)
+          reject([])
+        })
+    })
+  }
+
+  useEffect(function () {
+    getTodoList().then((list) => {
+      setList(list)
+    })
+  }, [])
   return (
     <div className="todo-list">
-      {colors.map((color) => {
+      {list.map((item) => {
         const borderStyle = {
-          border: `thin solid ${color.bar}`,
+          border: `thin solid ${item.color}`,
         }
         const barStyle = {
-          backgroundColor: `${color.bar}`,
+          backgroundColor: `${item.color}`,
         }
         const bgStyle = {
           // WebkitMaskImage: `-webkit-gradient(linear, right bottom, 10% 100%, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)))`
@@ -36,9 +53,6 @@ const TodoList = (props: {}) => {
             </div>
             <div className="todo-list--item-content">
               <Checkbox>踊り子</Checkbox>
-            </div>
-            <div className="todo-list--item-content">
-              <Checkbox>怪獣の花唄</Checkbox>
             </div>
           </div>
         )

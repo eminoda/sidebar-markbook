@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App'
 import Todo from './views/Todo/Todo'
-import TodoList from './components/TodoList/TodoList'
-import TodoEditor from './components/TodoEditor/TodoEditor'
+import TodoList from './views/Todo/TodoList/TodoList'
+import TodoEditor from './views/Todo/TodoEditor/TodoEditor'
 import './index.css'
 
 const router = createBrowserRouter([

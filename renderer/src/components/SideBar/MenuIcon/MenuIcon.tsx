@@ -21,7 +21,7 @@ const MenuIcon: React.FC<MenuIconProps> = (props) => {
 
   const handleMenuIcon = (props: MenuIconProps) => {
     if (props.name == '记事本') {
-      ipc.invoke('invoke-event', { eventName: 'todo' }).then((data) => {
+      ipc.invoke('invoke-event', { eventName: 'open-win-todo' }).then((data) => {
         console.log(data)
       })
     }
