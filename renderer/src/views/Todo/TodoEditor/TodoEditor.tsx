@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { Checkbox, Input, Row, Tooltip } from 'antd'
-import { EditOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons'
+import { Checkbox, Button, Input, Row, Tooltip } from 'antd'
+import { EditOutlined, PlusOutlined, CheckOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import './TodoEditor.less'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 interface todoItemProps {
-  id: number
+  todoId: number
   isFinished: boolean
   isEditor: boolean
   content: string
 }
 
 const TodoEditor = () => {
+  let location = useLocation()
   const [todoList, setTodoList] = useState<todoItemProps[]>([])
+
+  useEffect(() => {
+    const id = location.state.id
+    ipc
+      .invoke<todoItemProps[]>('invoke-event', { eventName: 'get-todo-list', data: id })
+      .then((data: todoItemProps[]) => {
+        console.log(data)
+        setTodoList(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
   const addTodoItem = (event: React.ChangeEvent): void => {
     const item: todoItemProps = {
-      id: Date.now(),
+      todoId: Date.now(),
       isFinished: false,
       content: '',
-      isEditor: false,
+      isEditor: true,
     }
     setTodoList([...todoList, item])
   }
@@ -25,7 +41,7 @@ const TodoEditor = () => {
   const onEditorStatusChange = (event: React.MouseEvent | React.FocusEvent, updateTodoItem: todoItemProps, isEditor: boolean): void => {
     setTodoList(
       todoList.map((item) => {
-        if (item.id == updateTodoItem.id) {
+        if (item.todoId == updateTodoItem.todoId) {
           item.isEditor = isEditor
         }
         return item
@@ -38,7 +54,7 @@ const TodoEditor = () => {
     const content = event.target.value
     setTodoList(
       todoList.map((item) => {
-        if (item.id == updateTodoItem.id) {
+        if (item.todoId == updateTodoItem.todoId) {
           item.content = content
         }
         return item
@@ -55,14 +71,18 @@ const TodoEditor = () => {
       <div className="todo-editor-content">
         {todoList.map((item) => {
           return (
-            <Row key={item.id} justify="start" align="middle" className="todo-editor-content--line">
+            <Row key={item.todoId} justify="start" align="middle" className="todo-editor-content--line">
               <Row justify="start" align="middle">
-                <Checkbox disabled={!item.content}>
+                <Checkbox disabled={!item.content} checked={item.isFinished}>
                   {item.isEditor && <Input placeholder="请输入新内容" value={item.content} onBlur={(event) => onEditorStatusChange(event, item, false)} onChange={(event) => onEditorContentChange(event, item)} />}
                   {!item.isEditor && <span onClick={(event) => onEditorStatusChange(event, item, true)}>{item.content}</span>}
                 </Checkbox>
-                <EditOutlined onClick={(event) => onEditorStatusChange(event, item, true)} />
-                {item.isEditor && <CheckOutlined onClick={(event) => onEditorStatusChange(event, item, false)} style={{ paddingLeft: '10px' }} />}
+                {!item.isEditor && <EditOutlined onClick={(event) => onEditorStatusChange(event, item, true)} />}
+                {item.isEditor && (
+                  <Button onClick={(event) => onEditorStatusChange(event, item, false)} size="small" type="primary" shape="round">
+                    完成
+                  </Button>
+                )}
               </Row>
             </Row>
           )

@@ -8,7 +8,7 @@ const TODO_DATA_FILE_PATH = path.join(TODO_DATA_DIR, 'list.json')
 
 const createWindow = () => {}
 module.exports = {
-  fetchTodoList: () => {
+  fetchTodoList: function () {
     try {
       if (!fs.ensureDirSync(TODO_DATA_DIR)) {
         fs.mkdirpSync(TODO_DATA_DIR)
@@ -19,6 +19,14 @@ module.exports = {
     } catch (err) {
       throw new Error('文件读取失败：' + err.message)
     }
+  },
+  updateTodoItem: function (list) {
+    fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(list))
+    return true
+  },
+  getTodoListById: function (id) {
+    const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    return list.find((item) => item.id == id).details
   },
   open: () => {
     const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo')

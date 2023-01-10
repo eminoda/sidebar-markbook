@@ -3,6 +3,7 @@
   overflow-y: auto;
   height: 380px;
   padding-right: 10px;
+  overflow-x: hidden;
   &::-webkit-scrollbar {
     width: 4px;
     height: 10px;
@@ -18,10 +19,10 @@
   &--item {
     margin-bottom: 12px;
     border-radius: 5px;
-    padding-bottom: 8px;
     position: relative;
+    min-height: 90px;
     &:last-child {
-      margin-bottom: 0;
+      padding-bottom: 20px;
     }
     &-bg {
       position: absolute;
@@ -41,14 +42,54 @@
       padding: 3px 6px;
       font-weight: 600;
       font-size: 15px;
+      display: flex;
+      justify-content: space-between;
+      .more-icon {
+        cursor: pointer;
+      }
     }
     &-content {
       padding: 0 6px;
+      position: relative;
+      min-height: 70px;
       .ant-checkbox-wrapper {
         span {
           color: #fff;
         }
       }
+    }
+  }
+}
+.drawer-more-menu {
+  position: absolute;
+  margin: 0 0 0;
+  .ant-drawer-content {
+    background-color: transparent;
+  }
+  .ant-drawer-wrapper-body {
+    justify-content: end;
+    align-items: center;
+  }
+  .ant-drawer-body {
+    padding: 0;
+    color: #333;
+    flex: none;
+    .operator-icon {
+      border: 1px solid transparent;
+      border-radius: 50%;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      justify-content: center;
+      flex-grow: 1;
+      text-align: center;
+      color: #fff;
+      background-color: #ff4d4f;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+    .operator-icon.edit {
+      background-color: #69b1ff;
     }
   }
 }

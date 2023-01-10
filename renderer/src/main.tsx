@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ConfigProvider } from 'antd'
 import App from './App'
 import Todo from './views/Todo/Todo'
 import TodoList from './views/Todo/TodoList/TodoList'
@@ -30,6 +31,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
-  <RouterProvider router={router} />
+
+  <ConfigProvider autoInsertSpaceInButton={false}>
+    <RouterProvider router={router} />
+  </ConfigProvider>
   // </React.StrictMode>
 )

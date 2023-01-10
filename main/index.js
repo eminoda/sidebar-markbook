@@ -50,17 +50,25 @@ function createWindow(screenHeight) {
   ipcMain.handle('invoke-event', (event, data) => {
     const { eventName, ...args } = data
     return new Promise((resolve, reject) => {
-      if (eventName == 'open-win-todo') {
-        try {
-          todoWindow.open()
-          resolve(true)
-        } catch (err) {
-          reject(new Error('打开记事本失败: ' + err.message))
+      try {
+        if (eventName == 'open-win-todo') {
+          try {
+            todoWindow.open()
+            resolve(true)
+          } catch (err) {
+            reject(new Error('打开记事本失败: ' + err.message))
+          }
+        } else if (eventName == 'fetch-todo-list') {
+          resolve(todoWindow.fetchTodoList())
+        } else if (eventName == 'update-todo-item') {
+          resolve(todoWindow.updateTodoItem(args.data))
+        } else if (eventName == 'get-todo-list') {
+          resolve(todoWindow.getTodoListById(args.data))
+        } else {
+          resolve({ test: 123 })
         }
-      } else if (eventName == 'fetch-todo-list') {
-        resolve(todoWindow.fetchTodoList())
-      } else {
-        resolve({ test: 123 })
+      } catch (err) {
+        console.log(err)
       }
     })
   })
