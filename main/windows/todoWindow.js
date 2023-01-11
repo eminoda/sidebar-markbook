@@ -1,7 +1,7 @@
 const { app, BrowserWindow, screen } = require('electron')
 const path = require('path')
 const fs = require('fs-extra')
-
+const moment = require('moment')
 const APP_PATH = app.getAppPath()
 const TODO_DATA_DIR = path.join(APP_PATH, 'todo')
 const TODO_DATA_FILE_PATH = path.join(TODO_DATA_DIR, 'list.json')
@@ -24,9 +24,45 @@ module.exports = {
     fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(list))
     return true
   },
-  getTodoListById: function (id) {
+  getTodoEvents: function (id) {
     const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    console.log(id, list)
     return list.find((item) => item.id == id).details
+  },
+  updateTodoListById: function (id, todoEvents) {
+    const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    const newList = list.map((item) => {
+      if (item.id == id) {
+        item.details = todoEvents
+      }
+      return item
+    })
+    fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(newList))
+    return true
+  },
+  removeTodoEventById: function (id, todoEvent) {
+    const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    const newList = list.map((item) => {
+      if (item.id == id) {
+        item.details = item.details.filter((eventItem) => eventItem.todoId !== todoEvent.todoId)
+      }
+      return item
+    })
+    fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(newList))
+    return newList.find((item) => item.id == id).details
+  },
+  createTodoEvent: function () {
+    const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    let newList = []
+    let id = 1
+    if (list.length > 0) {
+      id = list[0].id + 1
+      newList = [{ id, title: moment().format('YYYY-MM-DD HH:mm:ss'), color: '#fadb14', details: [] }, ...list]
+    } else {
+      newList = [{ id, title: moment().format('YYYY-MM-DD HH:mm:ss'), color: '#fadb14', details: [] }]
+    }
+    fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(newList))
+    return id
   },
   open: () => {
     const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo')

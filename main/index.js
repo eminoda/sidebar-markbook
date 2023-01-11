@@ -49,6 +49,8 @@ function createWindow(screenHeight) {
   // invoke-event 事件监听
   ipcMain.handle('invoke-event', (event, data) => {
     const { eventName, ...args } = data
+    console.log('请求事件', eventName)
+    console.log('请求参数=>', args)
     return new Promise((resolve, reject) => {
       try {
         if (eventName == 'open-win-todo') {
@@ -58,12 +60,22 @@ function createWindow(screenHeight) {
           } catch (err) {
             reject(new Error('打开记事本失败: ' + err.message))
           }
-        } else if (eventName == 'fetch-todo-list') {
+        } else if (eventName == 'getTodoList') {
           resolve(todoWindow.fetchTodoList())
-        } else if (eventName == 'update-todo-item') {
+        } else if (eventName == 'updateTodoList') {
           resolve(todoWindow.updateTodoItem(args.data))
-        } else if (eventName == 'get-todo-list') {
-          resolve(todoWindow.getTodoListById(args.data))
+        } else if (eventName == 'getTodoEvents') {
+          resolve(todoWindow.getTodoEvents(args.data))
+        } else if (eventName == 'removeTodoEventById') {
+          const { id, todoEvent } = args.data
+          resolve(todoWindow.removeTodoEventById(id, todoEvent))
+        } else if (eventName == 'createTodoEvent') {
+          resolve(todoWindow.createTodoEvent())
+        }
+        // 更新待做事项
+        else if (eventName == 'updateTodoEventsById') {
+          const { id, todoEvents } = args.data
+          resolve(todoWindow.updateTodoListById(id, todoEvents))
         } else {
           resolve({ test: 123 })
         }

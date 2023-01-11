@@ -3,14 +3,14 @@ import './TodoList.less'
 import { Row, Col, Checkbox, Popover, Drawer } from 'antd'
 import { UnorderedListOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import test from './test.jpg'
-import { todoItemProps } from '../TodoEditor/TodoEditor'
+import { TodoEventProps } from '../TodoEditor/TodoEditor'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 interface todoItemUIProps {
   id: number
   color: string
   title: string
-  details: todoItemProps[]
+  details: TodoEventProps[]
 }
 
 const TodoList = (props: {}) => {
@@ -23,7 +23,7 @@ const TodoList = (props: {}) => {
   const getTodoList = (): Promise<todoItemUIProps[]> => {
     return new Promise((resolve, reject) => {
       ipc
-        .invoke<[]>('invoke-event', { eventName: 'fetch-todo-list' })
+        .invoke<[]>('invoke-event', { eventName: 'getTodoList' })
         .then((data: todoItemUIProps[]) => {
           resolve(data)
         })
@@ -33,7 +33,7 @@ const TodoList = (props: {}) => {
         })
     })
   }
-  const changeTodoEditorStatus = (event: CheckboxChangeEvent, todoUIItem: todoItemUIProps, todoItem: todoItemProps): void => {
+  const changeTodoEditorStatus = (event: CheckboxChangeEvent, todoUIItem: todoItemUIProps, todoItem: TodoEventProps): void => {
     const checked = event.target.checked
     const newList = list.map((item) => {
       // 匹配父级
@@ -49,7 +49,7 @@ const TodoList = (props: {}) => {
       return item
     })
     ipc
-      .invoke<[]>('invoke-event', { eventName: 'update-todo-item', data: newList })
+      .invoke<[]>('invoke-event', { eventName: 'updateTodoList', data: newList })
       .then((data: todoItemUIProps[]) => {
         setList(newList)
       })
@@ -122,7 +122,7 @@ const TodoList = (props: {}) => {
             <div className="todo-list--item-bar" style={barStyle}></div>
             <div className="todo-list--item-title">
               {item.title}
-              <UnorderedListOutlined className="more-icon" onClick={() => triggleMoreMenu(item)} />
+              <UnorderedListOutlined className="more-icon" onClick={() => triggleMoreMenu(item)} onMouseEnter={() => triggleMoreMenu(item)} />
             </div>
             {/* <div className="todo-list--item-bg">
               <img src={test} alt="" style={bgStyle} />
