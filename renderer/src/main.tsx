@@ -6,6 +6,7 @@ import App from './App'
 import Todo from './views/Todo/Todo'
 import TodoList from './views/Todo/TodoList/TodoList'
 import TodoEditor from './views/Todo/TodoEditor/TodoEditor'
+import Brower from './views/Brower/Brower'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -26,7 +27,10 @@ const router = createBrowserRouter([
         element: <TodoEditor />,
       },
     ],
-  },
+  }, {
+    path: '/brower',
+    element: <Brower />
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

@@ -24,6 +24,10 @@ const MenuIcon: React.FC<MenuIconProps> = (props) => {
       ipc.invoke('invoke-event', { eventName: 'open-win-todo' }).then((data) => {
         console.log(data)
       })
+    } else if (props.type == '') {
+      ipc.invoke('invoke-event', { eventName: 'open-win-brower' }).then((data) => {
+        console.log(data)
+      })
     }
   }
   switch (props.type) {
