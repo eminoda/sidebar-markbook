@@ -12,7 +12,7 @@ module.exports = {
       browerWin.focus();
     } else {
       const rect = {
-        width: 1080,
+        width: 1200,
         height: 720,
       };
       const primaryDisplay = screen.getPrimaryDisplay();

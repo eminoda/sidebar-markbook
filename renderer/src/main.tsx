@@ -7,6 +7,8 @@ import Todo from './views/Todo/Todo'
 import TodoList from './views/Todo/TodoList/TodoList'
 import TodoEditor from './views/Todo/TodoEditor/TodoEditor'
 import Brower from './views/Brower/Brower'
+import BrowerHome from './views/Brower/BrowerHome/BrowerHome'
+import BrowerIframe from './views/Brower/BrowerIframe/BrowerIframe'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -29,7 +31,17 @@ const router = createBrowserRouter([
     ],
   }, {
     path: '/brower',
-    element: <Brower />
+    element: <Brower />,
+    children: [
+      {
+        path: '',
+        element: <BrowerHome />,
+      },
+      {
+        path: 'iframe',
+        element: <BrowerIframe />,
+      },
+    ],
   }
 ])
 
