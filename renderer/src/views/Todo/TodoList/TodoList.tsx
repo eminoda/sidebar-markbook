@@ -70,6 +70,12 @@ const TodoList = (props: {}) => {
   const navigateEditor = (id: number) => {
     navigate('/todo/editor', { state: { id } })
   }
+  const deleteTodoItem = (id: number) => {
+    ipc.invoke<todoItemUIProps[]>('invoke-event', { eventName: 'removeTodoById', data: id }).then((list) => {
+      setCurrent(null)
+      setList(list)
+    })
+  }
   useEffect(function () {
     getTodoList().then((list) => {
       setList(list)
@@ -100,7 +106,11 @@ const TodoList = (props: {}) => {
             />
           </div>
           <div className="operator-icon delete">
-            <DeleteOutlined />
+            <DeleteOutlined
+              onClick={() => {
+                deleteTodoItem(current.id)
+              }}
+            />
           </div>
         </Drawer>
       )}

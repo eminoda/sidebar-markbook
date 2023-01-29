@@ -24,6 +24,21 @@ module.exports = {
     fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(list))
     return true
   },
+  removeTodoById: function (id) {
+    const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
+    let removeIndex = -1
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].id == id) {
+        removeIndex = i
+        break
+      }
+    }
+    if (removeIndex > -1) {
+      list.splice(removeIndex, 1)
+    }
+    fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(list))
+    return list
+  },
   getTodoEvents: function (id) {
     const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
     console.log(id, list)
@@ -55,11 +70,15 @@ module.exports = {
     const list = JSON.parse(fs.readFileSync(TODO_DATA_FILE_PATH).toString() || '[]')
     let newList = []
     let id = 1
+    const currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
+    const date = moment().format('DD').split('')[1]
+    //               0,         1,        2,        3,          4,          5,        6,          7,        8,          9
+    const colors = ['#fadb14', '#fa940', '#ff4d4f', '#ffc53d', '#fadb14', '#a0d911', '#73d13d', '#5cdbd3', '#69b1ff', '#b37feb']
     if (list.length > 0) {
       id = list[0].id + 1
-      newList = [{ id, title: moment().format('YYYY-MM-DD HH:mm:ss'), color: '#fadb14', details: [] }, ...list]
+      newList = [{ id, title: currentDate, color: colors[date], details: [] }, ...list]
     } else {
-      newList = [{ id, title: moment().format('YYYY-MM-DD HH:mm:ss'), color: '#fadb14', details: [] }]
+      newList = [{ id, title: currentDate, color: colors[date], details: [] }]
     }
     fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(newList))
     return id
