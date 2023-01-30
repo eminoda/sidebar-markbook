@@ -83,6 +83,10 @@ module.exports = {
     fs.writeFileSync(TODO_DATA_FILE_PATH, JSON.stringify(newList))
     return id
   },
+  close: () => {
+    const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo');
+    todoWin.close()
+  },
   open: () => {
     const todoWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'todo')
     if (todoWin) {

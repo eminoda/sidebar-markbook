@@ -54,20 +54,48 @@ function createWindow(screenHeight) {
     console.log('请求参数=>', args)
     return new Promise((resolve, reject) => {
       try {
-        if (eventName == 'open-win-todo') {
+        if (eventName == 'openWindow') {
+          let errorMsg = ''
           try {
-            todoWindow.open()
-            resolve(true)
+            const { windowName } = args.data
+            switch (windowName) {
+              case 'todo':
+                errorMsg = '打开记事本失败'
+                todoWindow.open()
+                break
+              case 'browser':
+                errorMsg = '打开浏览器失败'
+                browerWindow.open()
+                break
+              default:
+                errorMsg = '窗口名称未定义'
+                break
+            }
           } catch (err) {
-            reject(new Error('打开记事本失败: ' + err.message))
+            throw new Error(errorMsg ? errorMsg + '：' + err.message : err.message)
           }
-        } else if (eventName == 'open-win-brower') {
+          resolve(true)
+        } else if (eventName == 'closeWindow') {
+          let errorMsg = ''
           try {
-            browerWindow.open()
-            resolve(true)
+            const { windowName } = args.data
+            switch (windowName) {
+              case 'todo':
+                errorMsg = '关闭记事本失败'
+                todoWindow.close()
+                break
+              case 'browser':
+                errorMsg = '关闭浏览器失败'
+                browerWindow.close()
+                break
+              default:
+                errorMsg = '窗口名称未定义'
+                break
+            }
           } catch (err) {
-            reject(new Error('打开浏览器失败: ' + err.message))
+            throw new Error(errorMsg ? errorMsg + '：' + err.message : err.message)
           }
+          resolve(true)
         } else if (eventName == 'getTodoList') {
           resolve(todoWindow.fetchTodoList())
         } else if (eventName == 'updateTodoList') {
@@ -90,7 +118,7 @@ function createWindow(screenHeight) {
           resolve({ test: 123 })
         }
       } catch (err) {
-        console.log(err)
+        reject(err)
       }
     })
   })

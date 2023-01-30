@@ -21,13 +21,27 @@ const MenuIcon: React.FC<MenuIconProps> = (props) => {
 
   const handleMenuIcon = (props: MenuIconProps) => {
     if (props.name == '记事本') {
-      ipc.invoke('invoke-event', { eventName: 'open-win-todo' }).then((data) => {
-        console.log(data)
-      })
+      ipc
+        .invoke('invoke-event', {
+          eventName: 'openWindow',
+          data: {
+            windowName: 'todo',
+          },
+        })
+        .then((data) => {
+          console.log(data)
+        })
     } else if (props.type == '') {
-      ipc.invoke('invoke-event', { eventName: 'open-win-brower' }).then((data) => {
-        console.log(data)
-      })
+      ipc
+        .invoke('invoke-event', {
+          eventName: 'openWindow',
+          data: {
+            windowName: 'browser',
+          },
+        })
+        .then((data) => {
+          console.log(data)
+        })
     }
   }
   switch (props.type) {

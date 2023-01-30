@@ -6,6 +6,10 @@ const APP_PATH = app.getAppPath();
 
 const createWindow = () => {};
 module.exports = {
+  close: () => {
+    const browerWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'brower');
+    browerWin.close()
+  },
   open: () => {
     const browerWin = BrowserWindow.getAllWindows().find((win) => win.getTitle() == 'brower');
     if (browerWin) {
